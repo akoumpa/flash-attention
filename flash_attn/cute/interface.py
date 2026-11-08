@@ -724,7 +724,7 @@ def _flash_attn_fwd(
         lse_shape = (batch_size, seqlen_q, num_head) if cu_seqlens_q is None else (total_q, num_head)
 
     if out is None:
-        out = torch.empty(
+        out = (torch.zeros if seqused_q is not None else torch.empty)(
             *q_batch_seqlen_shape, num_head, head_dim_v, dtype=out_torch_dtype, device=device
         )
     else:
@@ -2179,17 +2179,17 @@ def _flash_attn_bwd(
     out_torch_dtype = q.dtype
 
     if dq is None:
-        dq = torch.empty_like(q)
+        dq = torch.zeros_like(q) if seqused_q is not None else torch.empty_like(q)
     else:
         _validate_tensor(dq, "dq", q.shape, out_torch_dtype, device)
 
     if dk is None:
-        dk = torch.empty_like(k)
+        dk = torch.zeros_like(k) if seqused_k is not None else torch.empty_like(k)
     else:
         _validate_tensor(dk, "dk", k.shape, out_torch_dtype, device)
 
     if dv is None:
-        dv = torch.empty_like(v)
+        dv = torch.zeros_like(v) if seqused_k is not None else torch.empty_like(v)
     else:
         _validate_tensor(dv, "dv", v.shape, out_torch_dtype, device)
 
