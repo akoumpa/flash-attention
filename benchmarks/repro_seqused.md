@@ -19,9 +19,10 @@ dependencies. `--source` explicitly selects and verifies the imported checkout.
 uv run --no-project --python /path/to/gpu-env/bin/python \
   benchmarks/repro_seqused.py --source "$PWD" --require-zero
 
-# Sliding-window variant, same data and topology:
+# Nontrivial sliding window: some valid documents exceed the left distance.
 uv run --no-project --python /path/to/gpu-env/bin/python \
-  benchmarks/repro_seqused.py --source "$PWD" --require-zero --window 128
+  benchmarks/repro_seqused.py --source "$PWD" --require-zero --window 128 \
+  --span 256 --used 138 --documents 128
 
 # Compare the unpatched parent without altering this checkout:
 git worktree add --detach /tmp/fa4-seqused-parent 3c2c6b31e730fd13e7d6f0d384af22684b24c532
